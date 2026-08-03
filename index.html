@@ -391,7 +391,7 @@
       </p>
       <p class="inquiry-tour" id="inquiryTourLabel"></p>
 
-      <form class="inquiry-form" id="inquiryForm" novalidate>
+      <form class="inquiry-form" id="inquiryForm">
         <div class="inquiry-row">
           <label>
             Ad Soyad <span aria-hidden="true">*</span>
@@ -422,22 +422,20 @@
         </label>
         <input type="hidden" name="tour" id="inquiryTourHidden" value="" />
         <input type="hidden" name="route" id="inquiryRouteHidden" value="" />
-        <p class="inquiry-error" id="inquiryError" hidden></p>
-        <button type="submit" class="inquiry-submit" id="inquirySubmit">
-          <span>Talep Gönder</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M22 2L11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            <path d="M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-          </svg>
-        </button>
+        <div class="inquiry-actions">
+          <button type="submit" class="inquiry-submit" data-send="gmail">
+            <span>Tarayıcıda gönder</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M22 2L11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button type="button" class="inquiry-submit inquiry-submit--light" data-send="app">
+            Mail uygulamasında aç
+          </button>
+        </div>
         <p class="inquiry-kvkk">Verileriniz KVKK kapsamında %100 güvendedir.</p>
       </form>
-
-      <div class="inquiry-success" id="inquirySuccess" hidden>
-        <h3>Talebiniz iletildi</h3>
-        <p>Teşekkürler. En kısa sürede sizinle iletişime geçeceğiz.</p>
-        <button type="button" class="btn btn-primary" data-close-inquiry>Kapat</button>
-      </div>
     </div>
   </div>
 
@@ -457,35 +455,75 @@
     (function tourInquiry() {
       const modal = document.getElementById("inquiryModal");
       const form = document.getElementById("inquiryForm");
-      const success = document.getElementById("inquirySuccess");
       const tourLabel = document.getElementById("inquiryTourLabel");
       const tourHidden = document.getElementById("inquiryTourHidden");
       const routeHidden = document.getElementById("inquiryRouteHidden");
-      const errorEl = document.getElementById("inquiryError");
-      const submitBtn = document.getElementById("inquirySubmit");
       const MAIL_TO = "info@4biryana.com";
 
-      function setError(msg) {
-        if (!errorEl) return;
-        if (!msg) {
-          errorEl.hidden = true;
-          errorEl.textContent = "";
-          return;
+      function buildBody(data) {
+        return [
+          "Merhaba,",
+          "",
+          data.tour + " (" + data.route + ") hakkında bilgi almak istiyorum.",
+          "",
+          "Ad Soyad: " + data.name,
+          "Telefon: " + data.phone,
+          "E-posta: " + data.email,
+          "Kişi sayısı: " + (data.guests || "-"),
+          "Tercih tarihi: " + (data.dates || "-"),
+          "",
+          "Mesaj:",
+          data.message,
+          "",
+          "Saygılarımla"
+        ].join("\n");
+      }
+
+      function getData() {
+        const fd = new FormData(form);
+        return {
+          name: String(fd.get("name") || "").trim(),
+          phone: String(fd.get("phone") || "").trim(),
+          email: String(fd.get("email") || "").trim(),
+          guests: String(fd.get("guests") || "").trim(),
+          dates: String(fd.get("dates") || "").trim(),
+          message: String(fd.get("message") || "").trim(),
+          tour: String(fd.get("tour") || "").trim(),
+          route: String(fd.get("route") || "").trim()
+        };
+      }
+
+      function openMail(channel) {
+        if (!form.reportValidity()) return;
+        const data = getData();
+        const subject = data.tour + " Bilgi Talebi";
+        const body = buildBody(data);
+
+        if (channel === "gmail") {
+          const url =
+            "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+            encodeURIComponent(MAIL_TO) +
+            "&su=" +
+            encodeURIComponent(subject) +
+            "&body=" +
+            encodeURIComponent(body);
+          window.open(url, "_blank", "noopener,noreferrer");
+        } else {
+          window.location.href =
+            "mailto:" +
+            encodeURIComponent(MAIL_TO) +
+            "?subject=" +
+            encodeURIComponent(subject) +
+            "&body=" +
+            encodeURIComponent(body);
         }
-        errorEl.hidden = false;
-        errorEl.textContent = msg;
       }
 
       function openModal(title, route) {
-        form.hidden = false;
-        success.hidden = true;
         form.reset();
-        setError("");
         tourLabel.textContent = title + " · " + route;
         tourHidden.value = title;
         routeHidden.value = route;
-        submitBtn.disabled = false;
-        submitBtn.classList.remove("is-loading");
         modal.hidden = false;
         document.body.classList.add("inquiry-open");
         const first = form.querySelector('input[name="name"]');
@@ -511,51 +549,15 @@
         if (e.key === "Escape" && !modal.hidden) closeModal();
       });
 
-      form.addEventListener("submit", async (e) => {
+      form.addEventListener("submit", (e) => {
         e.preventDefault();
-        setError("");
-        if (!form.reportValidity()) return;
-
-        const fd = new FormData(form);
-        const payload = {
-          name: String(fd.get("name") || "").trim(),
-          phone: String(fd.get("phone") || "").trim(),
-          email: String(fd.get("email") || "").trim(),
-          guests: String(fd.get("guests") || "").trim(),
-          dates: String(fd.get("dates") || "").trim(),
-          message: String(fd.get("message") || "").trim(),
-          tour: String(fd.get("tour") || "").trim(),
-          route: String(fd.get("route") || "").trim(),
-          _subject: (String(fd.get("tour") || "Tur") + " Bilgi Talebi").trim(),
-          _template: "table",
-          _captcha: "false"
-        };
-
-        submitBtn.disabled = true;
-        submitBtn.classList.add("is-loading");
-
-        try {
-          const res = await fetch("https://formsubmit.co/ajax/" + encodeURIComponent(MAIL_TO), {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json"
-            },
-            body: JSON.stringify(payload)
-          });
-
-          if (!res.ok) throw new Error("send-failed");
-          const data = await res.json().catch(() => ({}));
-          if (data.success === "false" || data.success === false) throw new Error("send-failed");
-
-          form.hidden = true;
-          success.hidden = false;
-        } catch (err) {
-          setError("Gönderim şu an tamamlanamadı. Lütfen tekrar deneyin veya info@4biryana.com adresine yazın.");
-          submitBtn.disabled = false;
-          submitBtn.classList.remove("is-loading");
-        }
+        openMail("gmail");
       });
+
+      const appBtn = form.querySelector('[data-send="app"]');
+      if (appBtn) {
+        appBtn.addEventListener("click", () => openMail("app"));
+      }
     })();
   </script>
 </body>

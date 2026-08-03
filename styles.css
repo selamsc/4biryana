@@ -1195,14 +1195,11 @@ body.inquiry-open {
   background: var(--white);
 }
 
-.inquiry-error {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: rgba(227, 6, 19, 0.08);
-  color: var(--red-dark);
-  font-size: 12px;
-  font-weight: 600;
+.inquiry-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .inquiry-submit {
@@ -1211,7 +1208,6 @@ body.inquiry-open {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  margin-top: 4px;
   padding: 15px 18px;
   border: 0;
   border-radius: 12px;
@@ -1223,21 +1219,27 @@ body.inquiry-open {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition: background 0.2s ease, transform 0.15s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-.inquiry-submit:hover:not(:disabled) {
+.inquiry-submit:hover {
   background: #0f141f;
   transform: translateY(-1px);
 }
 
-.inquiry-submit:disabled {
-  opacity: 0.7;
-  cursor: wait;
+.inquiry-submit--light {
+  background: var(--white);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
-.inquiry-submit.is-loading span::after {
-  content: "…";
+.inquiry-submit--light:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+  transform: translateY(-1px);
 }
 
 .inquiry-kvkk {
@@ -1248,22 +1250,6 @@ body.inquiry-open {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--muted);
-}
-
-.inquiry-success {
-  text-align: center;
-  padding: 28px 8px 12px;
-}
-
-.inquiry-success h3 {
-  margin: 0 0 8px;
-  font-size: 22px;
-}
-
-.inquiry-success p {
-  margin: 0 0 20px;
-  color: var(--ink-soft);
-  font-size: 14px;
 }
 
 @media (max-width: 560px) {
