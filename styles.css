@@ -1177,7 +1177,7 @@ body.inquiry-open {
 .inquiry-form input,
 .inquiry-form textarea {
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
