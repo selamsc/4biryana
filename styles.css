@@ -203,14 +203,6 @@ p {
   border-radius: 2px;
 }
 
-.nav-link.has-dropdown > .chevron {
-  display: inline-block;
-  margin-left: 4px;
-  border: 4px solid transparent;
-  border-top-color: currentColor;
-  transform: translateY(2px);
-}
-
 .header-phone {
   display: flex;
   align-items: center;
