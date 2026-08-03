@@ -24,19 +24,28 @@
 
 html {
   scroll-behavior: smooth;
-  overscroll-behavior: none;
-  background: var(--footer);
+  overscroll-behavior-y: none;
+  background-color: var(--footer);
+  height: 100%;
 }
 
 body {
   margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
   font-family: var(--font);
   color: var(--ink);
-  background: var(--white);
+  background-color: var(--footer);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
-  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  background-color: var(--white);
 }
 
 img {
@@ -126,6 +135,7 @@ p {
   border-bottom: 1px solid var(--line);
   height: var(--header-h);
   overflow: visible;
+  flex-shrink: 0;
 }
 
 .header-inner {
@@ -756,8 +766,9 @@ p {
   background: var(--footer);
   color: var(--footer-muted);
   padding-top: 40px;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .footer-top {
