@@ -815,28 +815,6 @@ p {
   z-index: 1;
 }
 
-.socials {
-  display: flex;
-  gap: 8px;
-}
-
-.socials a {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  display: grid;
-  place-items: center;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--white);
-  transition: background 0.2s ease;
-}
-
-.socials a:hover {
-  background: var(--red);
-}
-
 .footer-col h4 {
   color: var(--white);
   font-size: 13px;
