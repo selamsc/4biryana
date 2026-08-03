@@ -399,7 +399,17 @@
           </label>
           <label>
             Telefon <span aria-hidden="true">*</span>
-            <input type="tel" name="phone" required autocomplete="tel" placeholder="0532 XXX XX XX" />
+            <input
+              type="tel"
+              name="phone"
+              required
+              autocomplete="tel"
+              inputmode="tel"
+              pattern="[\d\s+()\-]{10,20}"
+              maxlength="20"
+              placeholder="0532 XXX XX XX"
+              title="Geçerli bir telefon numarası girin"
+            />
           </label>
         </div>
         <label>
@@ -528,6 +538,13 @@
         document.body.classList.add("inquiry-open");
         const first = form.querySelector('input[name="name"]');
         if (first) first.focus();
+      }
+
+      const phoneInput = form.querySelector('input[name="phone"]');
+      if (phoneInput) {
+        phoneInput.addEventListener("input", () => {
+          phoneInput.value = phoneInput.value.replace(/[^\d+\s()\-]/g, "");
+        });
       }
 
       function closeModal() {
