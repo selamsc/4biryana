@@ -36,13 +36,10 @@
             <span class="phone-sub">7/24 Destek</span>
           </div>
         </div>
-        <a
-          class="btn btn-primary btn-header"
-          href="mailto:info@4biryana.com?subject=Vize%20Dan%C4%B1%C5%9Fmanl%C4%B1%C4%9F%C4%B1%20Talebi&body=Merhaba%2C%0A%0A..........%20%C3%BClkesi%20i%C3%A7in%20..........%20-%20..........%20tarihlerinde%20seyahat%20etmek%20istiyorum.%0AVize%20randevusu%20hakk%C4%B1nda%20bilgi%20alabilir%20miyim%3F%0A%0AAd%20Soyad%3A%0ATelefon%3A%0A%0ASayg%C4%B1lar%C4%B1mla"
-        >
+        <button type="button" class="btn btn-primary btn-header" data-open-inquiry="visa">
           Vize Danışmanlığı Al
           <span class="btn-arrow" aria-hidden="true">→</span>
-        </a>
+        </button>
         <button class="mobile-toggle" type="button" aria-label="Menüyü aç" id="mobileToggle">
           <span></span><span></span><span></span>
         </button>
@@ -164,13 +161,10 @@
           </div>
 
           <a href="#vize" class="see-all visa-all">Tüm Vize İşlemleri <span aria-hidden="true">→</span></a>
-          <a
-            class="btn btn-primary visa-cta"
-            href="mailto:info@4biryana.com?subject=Vize%20Dan%C4%B1%C5%9Fmanl%C4%B1%C4%9F%C4%B1%20Talebi&body=Merhaba%2C%0A%0A..........%20%C3%BClkesi%20i%C3%A7in%20..........%20-%20..........%20tarihlerinde%20seyahat%20etmek%20istiyorum.%0AVize%20randevusu%20hakk%C4%B1nda%20bilgi%20alabilir%20miyim%3F%0A%0AAd%20Soyad%3A%0ATelefon%3A%0A%0ASayg%C4%B1lar%C4%B1mla"
-          >
+          <button type="button" class="btn btn-primary visa-cta" data-open-inquiry="visa">
             Vize Danışmanlığı Al
             <span class="btn-arrow" aria-hidden="true">→</span>
-          </a>
+          </button>
         </div>
 
         <div class="visa-photo">
@@ -386,7 +380,7 @@
       <button type="button" class="inquiry-close" data-close-inquiry aria-label="Kapat">×</button>
       <span class="inquiry-badge">Ücretsiz bilgi</span>
       <h2 id="inquiryTitle">Hemen Başvurun</h2>
-      <p class="inquiry-lead">
+      <p class="inquiry-lead" id="inquiryLead">
         Sizi en kısa sürede arayarak seçtiğiniz tur için uygun planı birlikte oluşturalım.
       </p>
       <p class="inquiry-tour" id="inquiryTourLabel"></p>
@@ -417,21 +411,22 @@
           <input type="email" name="email" required autocomplete="email" placeholder="ornek@mail.com" />
         </label>
         <div class="inquiry-row">
-          <label>
-            Kişi sayısı
-            <input type="number" name="guests" min="1" max="50" placeholder="Örn: 2" />
+          <label id="inquiryFieldALabel">
+            <span class="inquiry-field-title">Kişi sayısı</span>
+            <input type="text" name="field_a" id="inquiryFieldA" placeholder="Örn: 2" />
           </label>
-          <label>
-            Tercih tarihi
-            <input type="text" name="dates" placeholder="Örn: Eylül 2026" />
+          <label id="inquiryFieldBLabel">
+            <span class="inquiry-field-title">Tercih tarihi</span>
+            <input type="text" name="field_b" id="inquiryFieldB" placeholder="Örn: Eylül 2026" />
           </label>
         </div>
         <label>
           Mesajınız <span aria-hidden="true">*</span>
           <textarea name="message" rows="4" required placeholder="Detayları buraya yazabilirsiniz..."></textarea>
         </label>
-        <input type="hidden" name="tour" id="inquiryTourHidden" value="" />
-        <input type="hidden" name="route" id="inquiryRouteHidden" value="" />
+        <input type="hidden" name="topic" id="inquiryTopicHidden" value="" />
+        <input type="hidden" name="detail" id="inquiryDetailHidden" value="" />
+        <input type="hidden" name="inquiry_type" id="inquiryTypeHidden" value="tour" />
         <div class="inquiry-actions">
           <button type="submit" class="inquiry-submit" data-send="gmail">
             <span>Tarayıcıda gönder</span>
@@ -462,31 +457,66 @@
     const yearEl = document.getElementById("copyright-year");
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-    (function tourInquiry() {
+    (function inquiryModal() {
       const modal = document.getElementById("inquiryModal");
       const form = document.getElementById("inquiryForm");
-      const tourLabel = document.getElementById("inquiryTourLabel");
-      const tourHidden = document.getElementById("inquiryTourHidden");
-      const routeHidden = document.getElementById("inquiryRouteHidden");
+      const topicLabel = document.getElementById("inquiryTourLabel");
+      const leadEl = document.getElementById("inquiryLead");
+      const topicHidden = document.getElementById("inquiryTopicHidden");
+      const detailHidden = document.getElementById("inquiryDetailHidden");
+      const typeHidden = document.getElementById("inquiryTypeHidden");
+      const fieldATitle = document.querySelector("#inquiryFieldALabel .inquiry-field-title");
+      const fieldBTitle = document.querySelector("#inquiryFieldBLabel .inquiry-field-title");
+      const fieldA = document.getElementById("inquiryFieldA");
+      const fieldB = document.getElementById("inquiryFieldB");
       const MAIL_TO = "info@4biryana.com";
 
+      const presets = {
+        tour: {
+          lead: "Sizi en kısa sürede arayarak seçtiğiniz tur için uygun planı birlikte oluşturalım.",
+          fieldA: { title: "Kişi sayısı", placeholder: "Örn: 2" },
+          fieldB: { title: "Tercih tarihi", placeholder: "Örn: Eylül 2026" },
+          fieldAMail: "Kişi sayısı",
+          fieldBMail: "Tercih tarihi",
+          subjectSuffix: " Bilgi Talebi"
+        },
+        visa: {
+          lead: "Sizi en kısa sürede arayarak profilinize uygun vize sürecini birlikte planlayalım.",
+          fieldA: { title: "Hedef ülke", placeholder: "Örn: Schengen / ABD" },
+          fieldB: { title: "Vize türü", placeholder: "Örn: Turistik / Ticari" },
+          fieldAMail: "Hedef ülke",
+          fieldBMail: "Vize türü",
+          subjectSuffix: " Talebi"
+        }
+      };
+
       function buildBody(data) {
+        const preset = presets[data.type] || presets.tour;
+        const intro =
+          data.type === "visa"
+            ? "Vize danışmanlığı hakkında bilgi almak istiyorum."
+            : data.topic + " (" + data.detail + ") hakkında bilgi almak istiyorum.";
+
         return [
           "Merhaba,",
           "",
-          data.tour + " (" + data.route + ") hakkında bilgi almak istiyorum.",
+          intro,
           "",
           "Ad Soyad: " + data.name,
           "Telefon: " + data.phone,
           "E-posta: " + data.email,
-          "Kişi sayısı: " + (data.guests || "-"),
-          "Tercih tarihi: " + (data.dates || "-"),
+          preset.fieldAMail + ": " + (data.fieldA || "-"),
+          preset.fieldBMail + ": " + (data.fieldB || "-"),
+          data.type === "tour" ? "Tur: " + data.topic : "Konu: " + data.topic,
+          data.type === "tour" ? "Rota: " + data.detail : null,
           "",
           "Mesaj:",
           data.message,
           "",
           "Saygılarımla"
-        ].join("\n");
+        ]
+          .filter((line) => line !== null)
+          .join("\n");
       }
 
       function getData() {
@@ -495,18 +525,20 @@
           name: String(fd.get("name") || "").trim(),
           phone: String(fd.get("phone") || "").trim(),
           email: String(fd.get("email") || "").trim(),
-          guests: String(fd.get("guests") || "").trim(),
-          dates: String(fd.get("dates") || "").trim(),
+          fieldA: String(fd.get("field_a") || "").trim(),
+          fieldB: String(fd.get("field_b") || "").trim(),
           message: String(fd.get("message") || "").trim(),
-          tour: String(fd.get("tour") || "").trim(),
-          route: String(fd.get("route") || "").trim()
+          topic: String(fd.get("topic") || "").trim(),
+          detail: String(fd.get("detail") || "").trim(),
+          type: String(fd.get("inquiry_type") || "tour").trim()
         };
       }
 
       function openMail(channel) {
         if (!form.reportValidity()) return;
         const data = getData();
-        const subject = data.tour + " Bilgi Talebi";
+        const preset = presets[data.type] || presets.tour;
+        const subject = data.topic + preset.subjectSuffix;
         const body = buildBody(data);
 
         if (channel === "gmail") {
@@ -529,11 +561,18 @@
         }
       }
 
-      function openModal(title, route) {
+      function openModal(type, topic, detail) {
+        const preset = presets[type] || presets.tour;
         form.reset();
-        tourLabel.textContent = title + " · " + route;
-        tourHidden.value = title;
-        routeHidden.value = route;
+        typeHidden.value = type;
+        topicHidden.value = topic;
+        detailHidden.value = detail;
+        topicLabel.textContent = detail ? topic + " · " + detail : topic;
+        leadEl.textContent = preset.lead;
+        if (fieldATitle) fieldATitle.textContent = preset.fieldA.title;
+        if (fieldBTitle) fieldBTitle.textContent = preset.fieldB.title;
+        if (fieldA) fieldA.placeholder = preset.fieldA.placeholder;
+        if (fieldB) fieldB.placeholder = preset.fieldB.placeholder;
         modal.hidden = false;
         document.body.classList.add("inquiry-open");
         const first = form.querySelector('input[name="name"]');
@@ -554,7 +593,21 @@
 
       document.querySelectorAll(".tour-card[data-tour-title]").forEach((card) => {
         card.addEventListener("click", () => {
-          openModal(card.getAttribute("data-tour-title") || "", card.getAttribute("data-tour-route") || "");
+          openModal(
+            "tour",
+            card.getAttribute("data-tour-title") || "",
+            card.getAttribute("data-tour-route") || ""
+          );
+        });
+      });
+
+      document.querySelectorAll("[data-open-inquiry]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          const type = btn.getAttribute("data-open-inquiry") || "visa";
+          if (type === "visa") {
+            openModal("visa", "Vize Danışmanlığı", "Schengen, ABD, İngiltere ve daha fazlası");
+          }
         });
       });
 
