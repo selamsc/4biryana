@@ -188,9 +188,11 @@
         </div>
 
         <div class="tours-grid">
-          <a
+          <button
+            type="button"
             class="tour-card"
-            href="mailto:info@4biryana.com?subject=%C4%B0talya%20Turu%20Bilgi%20Talebi&body=Merhaba%2C%0A%0A%C4%B0talya%20Turu%20(Roma%20%E2%80%93%20Floransa%20%E2%80%93%20Venedik)%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.%0A%0AAd%20Soyad%3A%0ATelefon%3A%0AKi%C5%9Fi%20say%C4%B1s%C4%B1%3A%0ATercih%20etti%C4%9Fim%20tarihler%3A%0ANot%3A%0A%0ASayg%C4%B1lar%C4%B1mla"
+            data-tour-title="İtalya Turu"
+            data-tour-route="Roma – Floransa – Venedik"
           >
             <div class="tour-media">
               <img src="images/tour-1.jpg" alt="" class="tour-image" />
@@ -204,11 +206,13 @@
                 <span class="tour-cta">Bilgi Al <span aria-hidden="true">→</span></span>
               </div>
             </div>
-          </a>
+          </button>
 
-          <a
+          <button
+            type="button"
             class="tour-card"
-            href="mailto:info@4biryana.com?subject=Benel%C3%BCks%20%26%20Paris%20Turu%20Bilgi%20Talebi&body=Merhaba%2C%0A%0ABenel%C3%BCks%20%26%20Paris%20Turu%20(Br%C3%BCksel%20%E2%80%93%20Amsterdam%20%E2%80%93%20Paris)%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.%0A%0AAd%20Soyad%3A%0ATelefon%3A%0AKi%C5%9Fi%20say%C4%B1s%C4%B1%3A%0ATercih%20etti%C4%9Fim%20tarihler%3A%0ANot%3A%0A%0ASayg%C4%B1lar%C4%B1mla"
+            data-tour-title="Benelüks & Paris Turu"
+            data-tour-route="Brüksel – Amsterdam – Paris"
           >
             <div class="tour-media">
               <img src="images/tour-2.jpg" alt="" class="tour-image" />
@@ -222,11 +226,13 @@
                 <span class="tour-cta">Bilgi Al <span aria-hidden="true">→</span></span>
               </div>
             </div>
-          </a>
+          </button>
 
-          <a
+          <button
+            type="button"
             class="tour-card"
-            href="mailto:info@4biryana.com?subject=Balkanlar%C4%B1n%20%C4%B0ncileri%20Bilgi%20Talebi&body=Merhaba%2C%0A%0ABalkanlar%C4%B1n%20%C4%B0ncileri%20(Üsküp%20%E2%80%93%20Ohrid%20%E2%80%93%20Budva%20%E2%80%93%20Dubrovnik)%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum.%0A%0AAd%20Soyad%3A%0ATelefon%3A%0AKi%C5%9Fi%20say%C4%B1s%C4%B1%3A%0ATercih%20etti%C4%9Fim%20tarihler%3A%0ANot%3A%0A%0ASayg%C4%B1lar%C4%B1mla"
+            data-tour-title="Balkanların İncileri"
+            data-tour-route="Üsküp – Ohrid – Budva – Dubrovnik"
           >
             <div class="tour-media">
               <img src="images/tour-3.jpg" alt="" class="tour-image" />
@@ -240,7 +246,7 @@
                 <span class="tour-cta">Bilgi Al <span aria-hidden="true">→</span></span>
               </div>
             </div>
-          </a>
+          </button>
         </div>
       </div>
     </section>
@@ -369,6 +375,51 @@
     </div>
   </footer>
 
+  <div class="inquiry-modal" id="inquiryModal" hidden>
+    <div class="inquiry-backdrop" data-close-inquiry></div>
+    <div
+      class="inquiry-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="inquiryTitle"
+    >
+      <button type="button" class="inquiry-close" data-close-inquiry aria-label="Kapat">×</button>
+      <h2 id="inquiryTitle">Tur Bilgi Talebi</h2>
+      <p class="inquiry-tour" id="inquiryTourLabel"></p>
+      <form class="inquiry-form" id="inquiryForm">
+        <label>
+          Ad Soyad
+          <input type="text" name="name" required autocomplete="name" />
+        </label>
+        <label>
+          Telefon
+          <input type="tel" name="phone" required autocomplete="tel" />
+        </label>
+        <label>
+          Kişi sayısı
+          <input type="number" name="guests" min="1" max="50" placeholder="Örn. 2" />
+        </label>
+        <label>
+          Tercih ettiğiniz tarihler
+          <input type="text" name="dates" placeholder="Örn. Eylül 2026" />
+        </label>
+        <label>
+          Notunuz
+          <textarea name="note" rows="3" placeholder="Talebinizi yazın..."></textarea>
+        </label>
+        <div class="inquiry-actions">
+          <button type="submit" class="btn btn-primary" data-send="gmail">
+            Tarayıcıda gönder
+          </button>
+          <button type="button" class="btn btn-outline" data-send="app">
+            Mail uygulamasında aç
+          </button>
+        </div>
+        <p class="inquiry-hint">Tarayıcıda gönder, Gmail’i yeni sekmede açar. Outlook veya başka hesap kullanıyorsanız mail uygulamasını tercih edebilirsiniz.</p>
+      </form>
+    </div>
+  </div>
+
   <script>
     const toggle = document.getElementById("mobileToggle");
     const nav = document.querySelector(".main-nav");
@@ -381,6 +432,106 @@
 
     const yearEl = document.getElementById("copyright-year");
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    (function tourInquiry() {
+      const modal = document.getElementById("inquiryModal");
+      const form = document.getElementById("inquiryForm");
+      const tourLabel = document.getElementById("inquiryTourLabel");
+      const MAIL_TO = "info@4biryana.com";
+      let currentTour = { title: "", route: "" };
+
+      function buildMessage(data) {
+        return [
+          "Merhaba,",
+          "",
+          currentTour.title + " (" + currentTour.route + ") hakkında bilgi almak istiyorum.",
+          "",
+          "Ad Soyad: " + (data.name || ""),
+          "Telefon: " + (data.phone || ""),
+          "Kişi sayısı: " + (data.guests || ""),
+          "Tercih ettiğim tarihler: " + (data.dates || ""),
+          "Not: " + (data.note || ""),
+          "",
+          "Saygılarımla"
+        ].join("\n");
+      }
+
+      function getFormData() {
+        const fd = new FormData(form);
+        return {
+          name: String(fd.get("name") || "").trim(),
+          phone: String(fd.get("phone") || "").trim(),
+          guests: String(fd.get("guests") || "").trim(),
+          dates: String(fd.get("dates") || "").trim(),
+          note: String(fd.get("note") || "").trim()
+        };
+      }
+
+      function openMail(channel) {
+        if (!form.reportValidity()) return;
+        const data = getFormData();
+        const subject = currentTour.title + " Bilgi Talebi";
+        const body = buildMessage(data);
+
+        if (channel === "gmail") {
+          const url =
+            "https://mail.google.com/mail/?view=cm&fs=1&to=" +
+            encodeURIComponent(MAIL_TO) +
+            "&su=" +
+            encodeURIComponent(subject) +
+            "&body=" +
+            encodeURIComponent(body);
+          window.open(url, "_blank", "noopener,noreferrer");
+        } else {
+          window.location.href =
+            "mailto:" +
+            encodeURIComponent(MAIL_TO) +
+            "?subject=" +
+            encodeURIComponent(subject) +
+            "&body=" +
+            encodeURIComponent(body);
+        }
+      }
+
+      function openModal(title, route) {
+        currentTour = { title: title, route: route };
+        tourLabel.textContent = title + " · " + route;
+        form.reset();
+        modal.hidden = false;
+        document.body.classList.add("inquiry-open");
+        const first = form.querySelector('input[name="name"]');
+        if (first) first.focus();
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+        document.body.classList.remove("inquiry-open");
+      }
+
+      document.querySelectorAll(".tour-card[data-tour-title]").forEach((card) => {
+        card.addEventListener("click", () => {
+          openModal(card.getAttribute("data-tour-title") || "", card.getAttribute("data-tour-route") || "");
+        });
+      });
+
+      modal.querySelectorAll("[data-close-inquiry]").forEach((el) => {
+        el.addEventListener("click", closeModal);
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.hidden) closeModal();
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        openMail("gmail");
+      });
+
+      const appBtn = form.querySelector('[data-send="app"]');
+      if (appBtn) {
+        appBtn.addEventListener("click", () => openMail("app"));
+      }
+    })();
   </script>
 </body>
 </html>
